@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id                           Int       @id @default(autoincrement())
+  userId                       Int
+  eventId                      Int
+  seats                        Int
+  totalPrice                   Decimal   @db.Decimal(10, 2)
+  status                       String    @db.VarChar(50)
+  deletedBy                    Int?
+  isDeleted                    Int       @default(0) @db.TinyInt
+  deletedAt                    DateTime? @db.Timestamp(0)
+  createdAt                    DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt                    DateTime  @default(now()) @db.Timestamp(0)
+  User_Booking_userIdToUser    User      @relation("Booking_userIdToUser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Booking_ibfk_1")
+  Event                        Event     @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Booking_ibfk_2")
+  User_Booking_deletedByToUser User?     @relation("Booking_deletedByToUser", fields: [deletedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Booking_ibfk_3")
+
+  @@index([deletedBy], map: "deletedBy")
+  @@index([eventId], map: "eventId")
+  @@index([userId], map: "userId")
+}
+
+model Event {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(255)
+  type      String    @db.VarChar(50)
+  date      DateTime  @db.DateTime(0)
+  location  String?   @db.VarChar(255)
+  price     Decimal?  @db.Decimal(10, 2)
+  image     String?   @db.VarChar(255)
+  seats     Int?      @default(0)
+  deletedBy Int?
+  isDeleted Int       @default(0) @db.TinyInt
+  deletedAt DateTime? @db.Timestamp(0)
+  createdAt DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  Booking   Booking[]
+  User      User?     @relation(fields: [deletedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Event_ibfk_1")
+  Review    Review[]
+
+  @@index([deletedBy], map: "deletedBy")
+}
+
+model Review {
+  id                          Int       @id @default(autoincrement())
+  userId                      Int
+  eventId                     Int
+  rating                      Int
+  comment                     String?   @db.Text
+  deletedBy                   Int?
+  isDeleted                   Int       @default(0) @db.TinyInt
+  deletedAt                   DateTime? @db.Timestamp(0)
+  createdAt                   DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt                   DateTime  @default(now()) @db.Timestamp(0)
+  User_Review_userIdToUser    User      @relation("Review_userIdToUser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Review_ibfk_1")
+  Event                       Event     @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Review_ibfk_2")
+  User_Review_deletedByToUser User?     @relation("Review_deletedByToUser", fields: [deletedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Review_ibfk_3")
+
+  @@index([deletedBy], map: "deletedBy")
+  @@index([eventId], map: "eventId")
+  @@index([userId], map: "userId")
+}
+
+model User {
+  id                              Int       @id @default(autoincrement())
+  name                            String?   @db.VarChar(255)
+  phone                           String?   @db.VarChar(255)
+  email                           String?   @unique(map: "email") @db.VarChar(255)
+  password                        String?   @db.VarChar(255)
+  role                            String?   @db.VarChar(255)
+  deletedBy                       Int?
+  isDeleted                       Int       @default(0) @db.TinyInt
+  deletedAt                       DateTime? @db.Timestamp(0)
+  createdAt                       DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt                       DateTime  @default(now()) @db.Timestamp(0)
+  Booking_Booking_userIdToUser    Booking[] @relation("Booking_userIdToUser")
+  Booking_Booking_deletedByToUser Booking[] @relation("Booking_deletedByToUser")
+  Event                           Event[]
+  Review_Review_userIdToUser      Review[]  @relation("Review_userIdToUser")
+  Review_Review_deletedByToUser   Review[]  @relation("Review_deletedByToUser")
+}
