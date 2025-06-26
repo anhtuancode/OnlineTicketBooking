@@ -5,6 +5,8 @@ import { ResponseSuccessInterceptor } from './common/interceptor/response-succes
 import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ProtectGuard } from './modules/auth/protect/protect.guard';
+import { PermissionGuard } from './modules/auth/permission/permission.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +22,8 @@ async function bootstrap() {
   ); // Chỉ nhận các trường có trong DTO
 
   const reflector = app.get(Reflector);
+  app.useGlobalGuards(new ProtectGuard(reflector));
+  app.useGlobalGuards(new PermissionGuard(reflector));
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalInterceptors(new ResponseSuccessInterceptor());
 
