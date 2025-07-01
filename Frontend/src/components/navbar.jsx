@@ -3,25 +3,33 @@ import { Link } from "react-router-dom";
 import { useNavbarLogic } from "../hooks/useNavbar";
 
 const Navbar = () => {
-  const { activeTab,
+  const {
+    activeTab,
     setActiveTab,
     searchQuery,
     setSearchQuery,
     selectedCity,
     setSelectedCity,
     selectedCinema,
-    setSelectedCinema, loading, error, findMovies} = useNavbarLogic();
+    setSelectedCinema,
+    loading,
+    error,
+    findMovies,
+    isLogin,
+    setIsLogin,
+    HandleLogout,
+  } = useNavbarLogic();
 
   const navItems = ["MOVIES", "EVENTS", "SPORTS", "PAGES", "BLOG", "CONTACT"];
 
   return (
-    <div 
+    <div
       className="min-h-screen relative overflow-hidden text-white"
       style={{
         backgroundImage: `url('https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_45_916112a3fa.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       {/* Dark overlay for better text readability */}
@@ -54,16 +62,30 @@ const Navbar = () => {
                 key={item}
                 onClick={() => setActiveTab(item)}
                 className={`transition-colors font-medium hover:text-gray-300 ${
-                  activeTab === item ? "text-white border-b-2 border-white" : "text-gray-300"
+                  activeTab === item
+                    ? "text-white border-b-2 border-white"
+                    : "text-gray-300"
                 }`}
               >
                 {item}
               </button>
             ))}
           </div>
-          <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-all font-medium border border-white">
-            <Link to="/signin">Sign In</Link>
-          </button>
+
+          {/* Sign In Button */}
+
+          {isLogin ? (
+            <button
+              onClick={HandleLogout}
+              className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-all font-medium border border-white"
+            >
+              Logout
+            </button>
+          ) : (
+            <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-all font-medium border border-white">
+              <Link to="/signin">Sign In</Link>
+            </button>
+          )}
         </div>
       </nav>
 
@@ -72,7 +94,9 @@ const Navbar = () => {
         <h1 className="text-5xl md:text-6xl font-bold mb-4 leading-tight">
           BOOK YOUR <br />
           TICKETS FOR <br />
-          <span className="text-white bg-black px-2 border-2 border-white inline-block mt-2">MOVIES</span>
+          <span className="text-white bg-black px-2 border-2 border-white inline-block mt-2">
+            MOVIES
+          </span>
         </h1>
         <p className="text-gray-200 text-lg mb-12">
           Safe, secure, reliable ticketing. Your ticket to live entertainment!
@@ -80,8 +104,12 @@ const Navbar = () => {
 
         {/* Search Box */}
         <div className="bg-white/95 text-black rounded-2xl p-8 shadow-2xl border-2 border-gray-300 backdrop-blur-sm">
-          <h3 className="text-lg font-semibold mb-2 text-gray-800">WELCOME TO MOVTIC</h3>
-          <h2 className="text-2xl font-bold mb-6 text-black">WHAT ARE YOU LOOKING FOR</h2>
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">
+            WELCOME TO ONLINE TICKET BOOKING
+          </h3>
+          <h2 className="text-2xl font-bold mb-6 text-black">
+            WHAT ARE YOU LOOKING FOR
+          </h2>
 
           {/* Tabs */}
           <div className="flex justify-center gap-4 mb-8">
@@ -122,11 +150,26 @@ const Navbar = () => {
                 onChange={(e) => setSelectedCity(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
               >
-                {["London", "New York", "Paris", "Tokyo"].map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
+                {["Hồ Chí Minh", "Hà Nội", "Bà Rịa Vũng tàu", "Đà Nẵng"].map(
+                  (city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+
+            {/* Giá */}
+            <div className="relative">
+              <select
+                onChange={(e) => console.log("Giá:", e.target.value)}
+                className="w-full pl-4 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
+              >
+                <option value="">Mức giá</option>
+                <option value="low">Dưới 100.000đ</option>
+                <option value="mid">100.000đ - 300.000đ</option>
+                <option value="high">Trên 300.000đ</option>
               </select>
             </div>
 
@@ -140,27 +183,28 @@ const Navbar = () => {
               />
             </div>
 
-            {/* Cinema */}
+            {/* Ưu đãi/Đánh giá */}
             <div className="relative">
-              <Camera className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
               <select
-                value={selectedCinema}
-                onChange={(e) => setSelectedCinema(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
+                onChange={(e) =>
+                  console.log("Đánh giá/Ưu đãi:", e.target.value)
+                }
+                className="w-full pl-4 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
               >
-                {["Roudan", "Cinema City", "IMAX", "Vue"].map((cinema) => (
-                  <option key={cinema} value={cinema}>
-                    {cinema}
-                  </option>
-                ))}
+                <option value="">Lọc thêm</option>
+                <option value="rating">Đánh giá cao</option>
+                <option value="discount">Có ưu đãi</option>
               </select>
             </div>
           </div>
 
           {/* Button */}
           <div className="mt-6">
-            <button  onClick={findMovies} className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold shadow-lg border-2 border-black transition-all">
-               {loading ? "Loading..." : "Search Movies"}
+            <button
+              onClick={findMovies}
+              className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold shadow-lg border-2 border-black transition-all"
+            >
+              {loading ? "Loading..." : "Search Movies"}
             </button>
           </div>
         </div>
@@ -173,7 +217,10 @@ const Navbar = () => {
           { title: "100% Assurance", desc: "Guaranteed booking confirmation" },
           { title: "Our Promise", desc: "Best prices and premium experience" },
         ].map((feat, idx) => (
-          <div key={idx} className="bg-white/90 text-black p-6 rounded-lg border-2 border-gray-200 hover:shadow-lg transition-all backdrop-blur-sm">
+          <div
+            key={idx}
+            className="bg-white/90 text-black p-6 rounded-lg border-2 border-gray-200 hover:shadow-lg transition-all backdrop-blur-sm"
+          >
             <div className="bg-black text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="font-bold text-xl">✓</span>
             </div>
