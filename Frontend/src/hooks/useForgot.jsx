@@ -1,13 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"
 import { API_URL } from "../common/constant/app.constant";
-
-
-export const useSignin = () => {
+export const useForgot = () => {
     const navigatePage = useNavigate();
     const [form, setForm] = useState({
         email: "",
-        password:"",
+        password: "",
+        confirm_password: "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -18,14 +17,26 @@ export const useSignin = () => {
         setError(""); // Clear error when user types
     };
 
+     const validateForm = () =>{
+        if(form.password !== form.confirm_password){
+          setError("Passwords do not match");
+          return false;
+        }
+        return true;
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         setLoading(true);
         setError("");
 
+        if(!validateForm()){
+            return;
+        }
+
         try{
-            const reponse = await fetch(`${API_URL}/auth/signin`,{
+            const reponse = await fetch(`${API_URL}/auth/forgot-password`,{
                 method: "POST",
                 headers:{
                     "Content-Type": "application/json",
@@ -36,15 +47,11 @@ export const useSignin = () => {
             const data = await reponse.json();
 
             if(!reponse.ok){
-                throw new Error(data.message || "Signin failed");
+                throw new Error(data.message || "Change password failed");
             }
 
-            const token = data.data;
-            localStorage.setItem("token", JSON.stringify(token));
-
-            alert("Signin successful!!");
-            navigatePage("/");
-
+            alert("Change password successful!!");
+            navigatePage("/signin");
         }catch(err){
             setError(err.message);
         }finally{
@@ -52,5 +59,5 @@ export const useSignin = () => {
         }
     };
 
-    return {form, loading, error, handleChange, handleSubmit};
+    return { form, loading, error, handleChange, handleSubmit };
 }

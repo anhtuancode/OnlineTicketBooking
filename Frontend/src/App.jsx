@@ -1,10 +1,11 @@
 import './App.css'
 import { Link } from 'react-router-dom'
+import Navbar from './components/navbar'
 
 function App() {
   return (
     <>
-      <h1>React Router Dom</h1>
+      <Navbar></Navbar>
       <ul>
         <li>
           <Link to="/signin">Sign In</Link>

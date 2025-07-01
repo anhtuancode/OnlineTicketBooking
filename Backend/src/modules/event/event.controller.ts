@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { Public } from 'src/common/decorator/public.decorator';
 
 @Controller('event')
 export class EventController {
@@ -13,6 +14,7 @@ export class EventController {
   }
 
   @Get()
+  @Public()
   async findAll() {
     return await this.eventService.findAll();
   }

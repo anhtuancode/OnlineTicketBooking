@@ -3,9 +3,9 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Signin from './pages/signin/signin.jsx'
-import Signup from './pages/signup/signup.jsx'
-import ForgotPassword from './pages/forgotPassword/forgot-password.jsx'
+import Signin from './pages/signin.jsx'
+import Signup from './pages/signup.jsx'
+import ForgotPassword from './pages/forgot-password.jsx'
 
 const routers = createBrowserRouter([
   {
