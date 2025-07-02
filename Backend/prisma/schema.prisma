@@ -78,6 +78,7 @@ model User {
   role                            String?   @db.VarChar(255)
   deletedBy                       Int?
   isDeleted                       Int       @default(0) @db.TinyInt
+  isActive                        Int       @default(1) @db.TinyInt
   deletedAt                       DateTime? @db.Timestamp(0)
   createdAt                       DateTime  @default(now()) @db.Timestamp(0)
   updatedAt                       DateTime  @default(now()) @db.Timestamp(0)

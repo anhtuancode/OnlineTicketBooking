@@ -17,11 +17,6 @@ export class CreateUserDto {
     @IsNotEmpty({ message: 'Email is required!' })
     phone: string;
 
-    @ApiProperty({ default: "123456" })
-    @IsString({ message: 'Password must be a string!' })
-    @IsNotEmpty({ message: 'Password is required!' })
-    password: string;
-
     @ApiProperty({ default: "user" })
     @IsString({ message: 'Role must be a string!' })
     @IsNotEmpty({ message: 'Role is required!' })

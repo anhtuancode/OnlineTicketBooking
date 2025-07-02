@@ -6,6 +6,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Signin from './pages/signin.jsx'
 import Signup from './pages/signup.jsx'
 import ForgotPassword from './pages/forgot-password.jsx'
+import AdminDashboard from './pages/admin.jsx'
+import UserDashBoard from './pages/user.jsx'
 
 const routers = createBrowserRouter([
   {
@@ -24,6 +26,14 @@ const routers = createBrowserRouter([
     path: '/forgot-password',
     element: <ForgotPassword />,
   },
+  {
+    path: '/admin',
+    element: <AdminDashboard />,
+  },
+  {
+    path: '/admin/user' ,
+    element: <UserDashBoard />,
+  }
 ])
 
 createRoot(document.getElementById('root')).render(
