@@ -5,9 +5,9 @@ import { Link, useLocation } from 'react-router-dom';
 const menuItems = [
   { icon: Home, label: 'Dashboard', to: '/admin', active: true },
   { icon: Users, label: 'Người dùng', to: '/admin/user', active: false },
-  { icon: Clapperboard, label: 'Phim & Sự kiện', to: '/admin', active: false },
-  { icon: BarChart3, label: 'Thống kê', to: '/admin', active: false },
-  { icon: Settings, label: 'Cài đặt', to: '/admin', active: false },
+  { icon: Clapperboard, label: 'Phim & Sự kiện', to: '/admin/event', active: false },
+  { icon: BarChart3, label: 'Thống kê', to: '', active: false },
+  { icon: Settings, label: 'Cài đặt', to: '', active: false },
 ];
 
 const SidebarAdmin = ({ sidebarOpen, setSidebarOpen }) => {

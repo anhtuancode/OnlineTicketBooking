@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useForgot } from "../hooks/useForgot";
+import { useForgot } from "../../hooks/useForgot";
 
 const ForgotPassword = () => {
   const { form, handleChange, handleSubmit, loading, error } = useForgot();

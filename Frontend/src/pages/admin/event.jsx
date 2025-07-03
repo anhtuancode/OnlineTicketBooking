@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import SidebarAdmin from "../components/sidebarAdmin";
-import NavbarAdmin from "../components/navbarAdmin";
-import useUser from "../hooks/useUser";
-import Toast from "../components/toast";
-import UserActions from "../components/actionButton";
-import ActiveButton from "../components/activeButton";
+import { useNavigate } from "react-router-dom";
+import NavbarAdmin from "../../components/navbarAdmin";
+import SidebarAdmin from "../../components/sidebarAdmin";
+import Toast from "../../components/toast";
+import useUser from "../../hooks/useUser";
+import UserActions from "../../components/actionButton";
+import ActiveButton from "../../components/activeButton";
 
-const UserDashBoard = () => {
+const EventDashBoard = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const {
     formData,
@@ -16,15 +18,18 @@ const UserDashBoard = () => {
     error,
     success,
     setSuccess,
-    renderUser,
     setFormData,
+    renderUser,
     toggleStatus,
-    statusMessage,
-    statusType,
     setStatusMessage,
     setStatusType,
+    statusMessage,
+    statusType,
+    handleDeleted,
+    setUsers,
+    users,
+    setError,
   } = useUser();
-  const [users, setUsers] = useState([]);
 
   // ⬇️ gọi khi load trang
   useEffect(() => {
@@ -74,52 +79,78 @@ const UserDashBoard = () => {
 
         <main className="flex-1 p-6 md:ml-0">
           <h1 className="text-2xl font-bold text-black mb-6">
-            Danh sách người dùng
+            Danh sách phim và sự kiện
           </h1>
           {/* Form Section */}
           <div className="bg-white border-2 border-black rounded-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-black mb-6">
-              Thêm người dùng mới
+              Thêm phim hoặc sự kiện mới
             </h2>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="title"
+                  value={formData.title}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border-2 border-black rounded-lg"
-                  placeholder="Nhập tên đầy đủ"
+                  placeholder="Nhập tiêu đề"
+                />
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-black rounded-lg"
+                >
+                  <option value="user">Phim</option>
+                  <option value="admin">Sự kiện</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-black rounded-lg"
                 />
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  name="location"
+                  value={formData.location}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border-2 border-black rounded-lg"
-                  placeholder="Nhập email"
+                  placeholder="Nhập địa điểm"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
+                  type="number"
+                  name="price"
+                  value={formData.price}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border-2 border-black rounded-lg"
-                  placeholder="Nhập số điện thoại"
+                  placeholder="Giá vé"
                 />
-                <select
-                  name="role"
-                  value={formData.role}
+                <input
+                  type="number"
+                  name="seats"
+                  value={formData.seats}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border-2 border-black rounded-lg"
-                >
-                  <option value="user">Người dùng</option>
-                  <option value="admin">Quản trị viên</option>
-                  <option value="editor">Biên tập viên</option>
-                </select>
+                  placeholder="Số ghế"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  className="w-full px-4 py-3 border-2 border-black rounded-lg"
+                />
               </div>
 
               <div className="flex space-x-4">
@@ -178,25 +209,23 @@ const UserDashBoard = () => {
                       <td className="px-6 py-4">{user.role}</td>
                       <td className="px-6 py-4">
                         <ActiveButton
-                          isDeleted={user.isDeleted}
+                          isActive={user.isActive}
                           onClick={async () => {
                             try {
-                              await toggleStatus(user.id, user.isDeleted);
-
-                              // ✅ Cập nhật trực tiếp trạng thái trong danh sách users
+                              await toggleStatus(user.id, user.isActive);
                               setUsers((prevUsers) =>
                                 prevUsers.map((u) =>
                                   u.id === user.id
                                     ? {
                                         ...u,
-                                        isDeleted: user.isDeleted === 0 ? 1 : 0,
+                                        isActive: user.isActive === 1 ? 0 : 1,
                                       }
                                     : u
                                 )
                               );
                               setStatusType("success");
                               setStatusMessage(
-                                user.isDeleted === 0
+                                user.isActive === 1
                                   ? "✅ Đã chuyển sang trạng thái *Chưa hoạt động*"
                                   : "✅ Đã chuyển sang trạng thái *Hoạt động*"
                               );
@@ -216,7 +245,10 @@ const UserDashBoard = () => {
                         />
                       </td>
                       <td className="px-6 py-4">
-                        <UserActions onEdit={() => {}} onDelete={() => {}} />
+                        <UserActions
+                          onEdit={() => navigate(`/admin/user/edit/${user.id}`)}
+                          onDelete={() => handleDeleted(user.id)}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -237,4 +269,4 @@ const UserDashBoard = () => {
   );
 };
 
-export default UserDashBoard;
+export default EventDashBoard;

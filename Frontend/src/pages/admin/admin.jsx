@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import SidebarAdmin from "../components/sidebarAdmin";
-import NavbarAdmin from "../components/navbarAdmin";
+import SidebarAdmin from "../../components/sidebarAdmin";
+import NavbarAdmin from "../../components/navbarAdmin";
 
 // Các phần còn lại của AdminDashboard giữ nguyên
 const AdminDashboard = () => {

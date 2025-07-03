@@ -3,11 +3,13 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Signin from './pages/signin.jsx'
-import Signup from './pages/signup.jsx'
-import ForgotPassword from './pages/forgot-password.jsx'
-import AdminDashboard from './pages/admin.jsx'
-import UserDashBoard from './pages/user.jsx'
+import Signin from './pages/client/signin'
+import Signup from './pages/client/signup'
+import ForgotPassword from './pages/client/forgot-password'
+import AdminDashboard from './pages/admin/admin'
+import UserDashBoard from './pages/admin/user'
+import EditUser from './pages/admin/editUser'
+import EventDashBoard from './pages/admin/event.jsx'
 
 const routers = createBrowserRouter([
   {
@@ -33,6 +35,14 @@ const routers = createBrowserRouter([
   {
     path: '/admin/user' ,
     element: <UserDashBoard />,
+  },
+  {
+    path: '/admin/user/edit/:id', 
+    element: <EditUser />,
+  },
+  {
+    path: '/admin/event', 
+    element: <EventDashBoard />,
   }
 ])
 

@@ -43,13 +43,17 @@ export class UserService {
       email: newUser.email,
       phone: newUser.phone,
       role: newUser.role,
-    }
+    };
 
     return data;
   }
 
   async findAll() {
-    const users = await this.prismaService.user.findMany();
+    const users = await this.prismaService.user.findMany({
+      where: {
+        isDeleted: 0,
+      },
+    });
 
     if (!users) throw new BadRequestException('Find all user fail');
 
@@ -59,36 +63,49 @@ export class UserService {
       email: user.email,
       phone: user.phone,
       role: user.role,
-      isDeleted: user.isDeleted
+      isDeleted: user.isDeleted,
+      isActive: user.isActive,
     }));
 
     return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
-
-  async toggleStatus(id: number) {
-    const user = await this.prismaService.user.findUnique({ where: { id: id }});
+  async findOne(id: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: id },
+    });
 
     if (!user) throw new BadRequestException('User not found');
 
-    const updateUser = await this.prismaService.user.update({ where: { id: id },
-      data: {
-        isDeleted: user.isDeleted === 0 ? 1 : 0
-      }
+    const data = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      isDeleted: user.isDeleted,
+      isActive: user.isActive,
+    };
+
+    return data;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: id },
     });
 
-    if(!updateUser) throw new BadRequestException('Toggle status user fail');
+    if (!user) throw new BadRequestException('User not found');
+
+    const updateUser = await this.prismaService.user.update({
+      where: { id: id },
+      data: {
+        ...updateUserDto,
+        updatedAt: new Date(),
+      },
+    });
+
+    if (!updateUser) throw new BadRequestException('Update user fail');
 
     const data = {
       id: updateUser.id,
@@ -96,8 +113,58 @@ export class UserService {
       email: updateUser.email,
       phone: updateUser.phone,
       role: updateUser.role,
-      isDeleted: updateUser.isDeleted
-    }
+    };
+
+    return data;
+  }
+
+  async remove(id: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: id },
+    });
+
+    if (!user) throw new BadRequestException('User not found');
+
+    const removeUser = await this.prismaService.user.update({
+      where: { id: id },
+      data: { isDeleted: 1 },
+    });
+
+    const data = {
+      id: removeUser.id,
+      name: removeUser.name,
+      email: removeUser.email,
+      phone: removeUser.phone,
+      role: removeUser.role,
+      isDeleted: removeUser.isDeleted,
+    };
+    return data;
+  }
+
+  async toggleStatus(id: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: id },
+    });
+
+    if (!user) throw new BadRequestException('User not found');
+
+    const updateUser = await this.prismaService.user.update({
+      where: { id: id },
+      data: {
+        isActive: user.isActive === 1 ? 0 : 1,
+      },
+    });
+
+    if (!updateUser) throw new BadRequestException('Toggle status user fail');
+
+    const data = {
+      id: updateUser.id,
+      name: updateUser.name,
+      email: updateUser.email,
+      phone: updateUser.phone,
+      role: updateUser.role,
+      isActive: updateUser.isActive,
+    };
 
     return data;
   }

@@ -1,7 +1,7 @@
 import React from "react";
 
-const ActiveButton = ({ isDeleted, onClick }) => {
-  const active = isDeleted === 1;
+const ActiveButton = ({ isActive, onClick }) => {
+  const active = isActive === 1;
 
   return (
     <button
