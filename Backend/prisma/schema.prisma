@@ -35,13 +35,14 @@ model Event {
   date      DateTime  @db.DateTime(0)
   location  String?   @db.VarChar(255)
   price     Decimal?  @db.Decimal(10, 2)
-  image     String?   @db.VarChar(255)
+  image     String?   @db.Text
   seats     Int?      @default(0)
   deletedBy Int?
   isDeleted Int       @default(0) @db.TinyInt
   deletedAt DateTime? @db.Timestamp(0)
   createdAt DateTime  @default(now()) @db.Timestamp(0)
   updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  showTime  Int
   Booking   Booking[]
   User      User?     @relation(fields: [deletedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Event_ibfk_1")
   Review    Review[]

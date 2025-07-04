@@ -2,28 +2,8 @@ import React, { useState } from "react";
 import SidebarAdmin from "../../components/sidebarAdmin";
 import NavbarAdmin from "../../components/navbarAdmin";
 
-// Các phần còn lại của AdminDashboard giữ nguyên
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    role: "user",
-    status: "active",
-  });
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    setFormData({ name: "", email: "", role: "user", status: "active" });
-  };
 
   return (
     <div className="min-h-screen bg-white">
