@@ -1,9 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SidebarAdmin from "../../components/sidebarAdmin";
 import NavbarAdmin from "../../components/navbarAdmin";
+import { useAdmin } from "../../hooks/useAdmin";
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userCount, setUserCount] = useState(0);
+  const [eventCount, setEventCount] = useState(0);  
+  const { handleCountUser, loading, handleCountEvent } = useAdmin();
+
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        const data = await handleCountUser();
+        if (data !== undefined) {
+          setUserCount(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching user count:", err);
+      }
+    };
+
+    const fetchEventCount = async () => {
+      try {
+        const data = await handleCountEvent();
+        if (data !== undefined) {
+          setEventCount(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching user count:", err);
+      }
+    };
+
+    fetchUserCount();
+    fetchEventCount();
+  }, [handleCountUser, handleCountEvent]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -17,8 +48,8 @@ const AdminDashboard = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[
-              { label: "Tổng người dùng", value: "1,234" },
-              { label: "Bài viết", value: "567" },
+              { label: "Tổng người dùng", value: loading ? "Loading..." : userCount.toString() },
+              { label: "Phim & event", value: loading ? "Loading..." : eventCount.toString()  },
               { label: "Lượt xem", value: "89,012" },
               { label: "Doanh thu", value: "$12,345" },
             ].map((stat, index) => (

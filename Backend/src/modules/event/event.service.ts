@@ -9,34 +9,39 @@ import { uploadImage } from 'src/common/multer/cloud.result';
 export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createEventDto: CreateEventDto, file: Express.Multer.File) {
-    const { title, type, date, showTime, ...optionalFields } = createEventDto;
+    const { title, type, date, showTime, startTime, location, price, seats } =
+      createEventDto;
 
-    // 1. Validate đầu vào
-    if (!title || !type || !date || showTime === undefined || showTime <= 0) {
-      throw new BadRequestException(
-        'Thiếu hoặc sai định dạng trường: title, type, date, showTime',
-      );
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
     }
 
-    if (!file) throw new BadRequestException('No file uploaded');
+    const priceEvent = Number(price);
+    const seatsEvent = Number(seats);
+
     const result = await uploadImage(file.buffer);
 
-    // 2. Bỏ qua các field không hợp lệ (undefined)
-    const filteredOptionalFields = Object.fromEntries(
-      Object.entries(optionalFields).filter(
-        ([_, value]) => value !== undefined,
-      ),
-    );
+    // 2. Gộp startTime (giờ + date) thành full datetime
+    const parsedStartTime = (() => {
+      const isoDate = new Date(date); // date: '2025-07-10'
+      const [hourStr, minuteStr] = startTime.split(':');
+      isoDate.setHours(Number(hourStr), Number(minuteStr), 0);
+      // Cộng thêm 7 tiếng nếu server/database lưu UTC
+      isoDate.setHours(isoDate.getHours() + 7);
+      return isoDate;
+    })();
 
-    // 3. Tạo sự kiện
     const newEvent = await this.prismaService.event.create({
       data: {
         title,
         type,
         date: new Date(date),
-        image: result.secure_url,
+        startTime: parsedStartTime,
         showTime,
-        ...filteredOptionalFields,
+        location,
+        price: priceEvent,
+        seats: seatsEvent,
+        image: result.secure_url,
       },
     });
 
@@ -44,18 +49,29 @@ export class EventService {
       throw new BadRequestException('Tạo sự kiện thất bại');
     }
 
-    // 4. Trả kết quả
+    // 4. Trả về kết quả
     return {
       id: newEvent.id,
       title: newEvent.title,
       type: newEvent.type,
       date: newEvent.date,
+      startTime: newEvent.startTime,
       showTime: newEvent.showTime,
       location: newEvent.location,
       price: newEvent.price,
-      image: newEvent.image,
       seats: newEvent.seats,
+      image: newEvent.image,
     };
+  }
+
+  async count(){
+    const count = await this.prismaService.event.count({
+      where: {
+        isDeleted: 0,
+      },
+    });
+
+    return count
   }
 
   async findAll() {
@@ -76,6 +92,10 @@ export class EventService {
       price: event.price,
       image: event.image,
       seats: event.seats,
+      showTime: event.showTime,
+      startTime: event.startTime
+        ? event.startTime.toISOString().substr(11, 5) // "08:00"
+        : '',
     }));
 
     return data;
@@ -97,6 +117,10 @@ export class EventService {
       price: event.price,
       image: event.image,
       seats: event.seats,
+      showTime: event.showTime,
+      startTime: event.startTime
+        ? event.startTime.toISOString().substr(11, 5) // "08:00"
+        : '',
     };
 
     return data;
@@ -107,13 +131,25 @@ export class EventService {
       where: { id: id, isDeleted: 0 },
     });
 
-    if (!existingEvent) throw new BadRequestException('Update event fail');
+    if (!existingEvent) throw new BadRequestException('Event not found');
+
+    // Handle startTime parsing if provided
+    let parsedStartTime: Date | undefined = undefined;
+    if (updateEventDto.startTime && updateEventDto.date) {
+      const isoDate = new Date(updateEventDto.date);
+      const [hourStr, minuteStr] = updateEventDto.startTime.split(':');
+      isoDate.setHours(Number(hourStr), Number(minuteStr), 0);
+      // Cộng thêm 7 tiếng nếu server/database lưu UTC
+      isoDate.setHours(isoDate.getHours() + 7);
+      parsedStartTime = isoDate;
+    }
 
     const updateEvent = await this.prismaService.event.update({
       where: { id: id },
       data: {
         ...updateEventDto,
         date: updateEventDto.date ? new Date(updateEventDto.date) : undefined,
+        startTime: parsedStartTime,
         updatedAt: new Date(),
       },
     });
@@ -129,6 +165,10 @@ export class EventService {
       price: updateEvent.price,
       image: updateEvent.image,
       seats: updateEvent.seats,
+      showTime: updateEvent.showTime,
+      startTime: updateEvent.startTime
+        ? updateEvent.startTime.toISOString().substr(11, 5) // "08:00"
+        : '',
     };
 
     return data;
@@ -160,5 +200,15 @@ export class EventService {
     };
 
     return data;
+  }
+
+  async countEvent() {
+    const count = await this.prismaService.event.count({
+      where: {
+        isDeleted: 0,
+      },
+    });
+
+    return count;
   }
 }

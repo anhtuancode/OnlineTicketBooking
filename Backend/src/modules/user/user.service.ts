@@ -70,6 +70,16 @@ export class UserService {
     return data;
   }
 
+  async countUser() {
+    const count = await this.prismaService.user.count({
+      where: {
+        isDeleted: 0,
+      },
+    });
+
+    return count;
+  }
+
   async findOne(id: number) {
     const user = await this.prismaService.user.findUnique({
       where: { id: id },

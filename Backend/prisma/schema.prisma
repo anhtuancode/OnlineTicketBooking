@@ -43,6 +43,7 @@ model Event {
   createdAt DateTime  @default(now()) @db.Timestamp(0)
   updatedAt DateTime  @default(now()) @db.Timestamp(0)
   showTime  Int
+  startTime DateTime? @db.Time(0)
   Booking   Booking[]
   User      User?     @relation(fields: [deletedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Event_ibfk_1")
   Review    Review[]

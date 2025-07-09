@@ -4,10 +4,12 @@ import SidebarAdmin from "../../components/sidebarAdmin";
 import Toast from "../../components/toast";
 import useEvent from "../../hooks/useEvent";
 import UserActions from "../../components/actionButton";
+import { useNavigate } from "react-router-dom";
 
 const EventDashBoard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   let index = 1;
+  const navigate = useNavigate();
 
   const {
     formData,
@@ -175,6 +177,80 @@ const EventDashBoard = () => {
                     </span>
                   )}
                 </div>
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border-2 rounded-lg ${
+                      fieldErrors.location ? "border-red-500" : "border-black"
+                    }`}
+                    placeholder="Nhập địa điểm rạp phim"
+                  />
+                  {fieldErrors.location && (
+                    <span className="absolute text-xs text-red-600 top-full mt-0.5 left-1">
+                      {fieldErrors.location}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border-2 rounded-lg ${
+                      fieldErrors.startTime ? "border-red-500" : "border-black"
+                    }`}
+                    placeholder="Nhập thời gian bắt đầu (hh:mm)"
+                  />
+                  {fieldErrors.startTime && (
+                    <span className="absolute text-xs text-red-600 top-full mt-0.5 left-1">
+                      {fieldErrors.startTime}
+                    </span>
+                  )}
+                </div>
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    name="seats"
+                    value={formData.seats}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border-2 rounded-lg ${
+                      fieldErrors.seats ? "border-red-500" : "border-black"
+                    }`}
+                    placeholder="Nhập số lượng ghế ngồi"
+                  />
+                  {fieldErrors.seats && (
+                    <span className="absolute text-xs text-red-600 top-full mt-0.5 left-1">
+                      {fieldErrors.seats}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border-2 rounded-lg ${
+                      fieldErrors.price ? "border-red-500" : "border-black"
+                    }`}
+                    placeholder="Nhập giá vé"
+                  />
+                  {fieldErrors.price && (
+                    <span className="absolute text-xs text-red-600 top-full mt-0.5 left-1">
+                      {fieldErrors.price}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex space-x-4">
@@ -220,8 +296,9 @@ const EventDashBoard = () => {
                     <th className="px-6 py-4 text-left">ID</th>
                     <th className="px-6 py-4 text-left">Hình ảnh</th>
                     <th className="px-6 py-4 text-left">Tiêu đề</th>
-                    <th className="px-6 py-4 text-left">Thể loại</th>
+                    <th className="px-6 py-4 text-left">Địa điểm</th>
                     <th className="px-6 py-4 text-left">Ngày phát hành</th>
+                    <th className="px-6 py-4 text-left">Thời lượng</th>
                     <th className="px-6 py-4 text-left">Hành động</th>
                   </tr>
                 </thead>
@@ -240,12 +317,12 @@ const EventDashBoard = () => {
                         ></div>
                       </td>
                       <td className="px-6 py-4">{event.title}</td>
-                      <td className="px-6 py-4">
-                        {event.type === "movie" ? "Phim" : "Sự kiện"}
-                      </td>
+                      <td className="px-6 py-4">{event.location}</td>
                       <td className="px-6 py-4">{formatDate(event.date) }</td>
+                      <td className="px-6 py-4">{`${event.showTime} phút`}</td>
                       <td className="px-6 py-4">
                         <UserActions
+                          onView={() => navigate(`/admin/event/${event.id}`)}
                           onEdit={() =>
                             navigate(`/admin/event/edit/${event.id}`)
                           }

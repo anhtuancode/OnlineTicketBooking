@@ -10,6 +10,8 @@ import AdminDashboard from './pages/admin/admin'
 import UserDashBoard from './pages/admin/user'
 import EditUser from './pages/admin/editUser'
 import EventDashBoard from './pages/admin/event.jsx'
+import EditEvent from './pages/admin/editEvent.jsx'
+import ViewEvent from './pages/admin/detailEvent.jsx'
 
 const routers = createBrowserRouter([
   {
@@ -43,6 +45,14 @@ const routers = createBrowserRouter([
   {
     path: '/admin/event', 
     element: <EventDashBoard />,
+  },
+  {
+    path: '/admin/event/edit/:id', 
+    element: <EditEvent />,
+  }, 
+  {
+    path: '/admin/event/:id', 
+    element: <ViewEvent />,
   }
 ])
 

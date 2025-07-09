@@ -20,6 +20,12 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('count')      
+  @Public()
+  countUser() {
+    return this.userService.countUser();
+  }
+
   @Get(':id')
   @Public()
   async findOne(@Param('id') id: string) {
@@ -43,4 +49,6 @@ export class UserController {
   async restore(@Param('id') id: string) {
     return await this.userService.toggleStatus(+id);
   }
+
+
 }

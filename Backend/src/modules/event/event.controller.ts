@@ -24,6 +24,12 @@ export class EventController {
     return await this.eventService.create(createEventDto,file);
   }
 
+  @Get('count')
+  @Public()
+  async count() {
+    return await this.eventService.count();
+  }
+
   @Get()
   @Public()
   async findAll() {
@@ -31,16 +37,19 @@ export class EventController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
     return this.eventService.findOne(+id);
   }
 
   @Put(':id')
+  @Public()
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventService.update(+id, updateEventDto);
   }
 
   @Delete(':id')
+  @Public()
   remove(@Param('id') id: string) {
     return this.eventService.remove(+id);
   }
