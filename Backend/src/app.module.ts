@@ -8,9 +8,10 @@ import { EventModule } from './modules/event/event.module';
 import { ProtectStrategy } from './modules/auth/protect/protect.strategy';
 import { PermissionStrategy } from './modules/auth/permission/permission.strategy';
 import { UserModule } from './modules/user/user.module';
+import { BookingModule } from './modules/booking/booking.module';
 
 @Module({
-  imports: [AuthModule, TokenModule, EventModule, UserModule],
+  imports: [AuthModule, TokenModule, EventModule, UserModule, BookingModule],
   controllers: [AppController],
   providers: [AppService, ProtectStrategy, PrismaService, PermissionStrategy],
 })

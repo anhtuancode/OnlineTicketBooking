@@ -1,6 +1,7 @@
 import { Search, MapPin, Calendar, Camera } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavbarLogic } from "../hooks/useNavbar";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const {
@@ -10,17 +11,26 @@ const Navbar = () => {
     setSearchQuery,
     selectedCity,
     setSelectedCity,
-    selectedCinema,
-    setSelectedCinema,
     loading,
-    error,
-    findMovies,
+    handleAllMovies,
     isLogin,
-    setIsLogin,
     HandleLogout,
+    events,
+    setEvents,
+    handleFindMovies,
+    handleFindEvents
   } = useNavbarLogic();
 
-  const navItems = ["MOVIES", "EVENTS", "SPORTS", "PAGES", "BLOG", "CONTACT"];
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await handleAllMovies();
+      setEvents(data);
+    };
+
+    fetchData();
+  }, []);
+
+  const navItems = ["MOVIES", "EVENTS", "TICKETS"];
 
   return (
     <div
@@ -57,19 +67,39 @@ const Navbar = () => {
             Online Booking Ticket
           </div>
           <div className="hidden md:flex gap-6">
-            {navItems.map((item) => (
-              <button
-                key={item}
-                onClick={() => setActiveTab(item)}
-                className={`transition-colors font-medium hover:text-gray-300 ${
-                  activeTab === item
-                    ? "text-white border-b-2 border-white"
-                    : "text-gray-300"
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+            <button
+              onClick={() => {
+                setActiveTab("MOVIES")
+                handleFindMovies()
+              }}
+              className={`transition-colors font-medium hover:text-gray-300 ${
+                activeTab === "MOVIES"
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-300"
+              }`}
+            >
+              MOVIES
+            </button>
+            <button
+              onClick={() => setActiveTab("EVENTS")}
+              className={`transition-colors font-medium hover:text-gray-300 ${
+                activeTab === "EVENTS"
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-300"
+              }`}
+            >
+              EVENTS
+            </button>
+            <button
+              onClick={() => setActiveTab("TICKETS")}
+              className={`transition-colors font-medium hover:text-gray-300 ${
+                activeTab === "TICKETS"
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-300"
+              }`}
+            >
+              <Link to="/ticket">TICKETS</Link>
+            </button>
           </div>
 
           {/* Sign In Button */}
@@ -113,10 +143,19 @@ const Navbar = () => {
 
           {/* Tabs */}
           <div className="flex justify-center gap-4 mb-8">
-            {["MOVIES", "EVENTS", "SPORTS"].map((tab) => (
+            {["ALL", "MOVIES", "EVENTS"].map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  setActiveTab(tab);
+                  if (tab === "MOVIES"){
+                     handleFindMovies();
+                  }else if (tab === "ALL"){
+                    handleAllMovies();
+                  }else{
+                    handleFindEvents();
+                  }
+                }}
                 className={`px-6 py-2 rounded-full font-medium transition-all duration-300 border-2 ${
                   activeTab === tab
                     ? "bg-black text-white border-black"
@@ -200,35 +239,53 @@ const Navbar = () => {
 
           {/* Button */}
           <div className="mt-6">
-            <button
-              onClick={findMovies}
-              className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold shadow-lg border-2 border-black transition-all"
-            >
+            <button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold shadow-lg border-2 border-black transition-all">
               {loading ? "Loading..." : "Search Movies"}
             </button>
           </div>
         </div>
-      </header>
 
-      {/* Features */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        {[
-          { title: "24x7 Care", desc: "Round the clock customer support" },
-          { title: "100% Assurance", desc: "Guaranteed booking confirmation" },
-          { title: "Our Promise", desc: "Best prices and premium experience" },
-        ].map((feat, idx) => (
-          <div
-            key={idx}
-            className="bg-white/90 text-black p-6 rounded-lg border-2 border-gray-200 hover:shadow-lg transition-all backdrop-blur-sm"
-          >
-            <div className="bg-black text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="font-bold text-xl">✓</span>
-            </div>
-            <h3 className="font-semibold mb-2 text-black">{feat.title}</h3>
-            <p className="text-gray-600 text-sm">{feat.desc}</p>
-          </div>
-        ))}
-      </section>
+        {/* Danh sách sự kiện sau nút Search */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {events.length === 0 && !loading ? (
+            <p className="text-white text-center col-span-full">
+              No events found
+            </p>
+          ) : (
+            events.map((event) => (
+              <div
+                key={event.id}
+                className="bg-white/90 p-4 rounded-lg shadow-md backdrop-blur-sm border border-gray-300"
+              >
+                <img
+                  src={
+                    event.image ||
+                    "https://via.placeholder.com/400x200?text=No+Image"
+                  }
+                  alt={event.title}
+                  className="w-full h-48 object-cover rounded-md mb-4"
+                />
+                <h3 className="text-xl font-semibold text-black mb-2">
+                  {event.title}
+                </h3>
+                <p className="text-gray-700 text-sm mb-1">
+                  📍 Location: {event.location}
+                </p>
+                <p className="text-gray-700 text-sm mb-1">
+                  🗓️ Date:{" "}
+                  {event.date ? new Date(event.date).toLocaleDateString() : ""}
+                </p>
+                <p className="text-gray-700 text-sm mb-2">
+                  🎫 Price: {event.price?.toLocaleString()} VND
+                </p>
+                <button className="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
+                  Book Now
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </header>
 
       {/* Footer spacing */}
       <div className="mt-16 pb-8"></div>

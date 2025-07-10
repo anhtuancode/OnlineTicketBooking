@@ -126,6 +126,62 @@ export class EventService {
     return data;
   }
 
+  async findMovies() {
+    const events = await this.prismaService.event.findMany({
+      where: {
+        type: 'movie',
+        isDeleted: 0,
+      },
+    });
+
+    if (!events) throw new BadRequestException('Find all event fail');
+
+    const data = events.map((event) => ({
+      id: event.id,
+      title: event.title,
+      type: event.type,
+      date: event.date,
+      location: event.location,
+      price: event.price,
+      image: event.image,
+      seats: event.seats,
+      showTime: event.showTime,
+      startTime: event.startTime
+        ? event.startTime.toISOString().substr(11, 5) // "08:00"
+        : '',
+    }));
+
+    return data;
+  }
+
+  async findEvents(){
+    const events = await this.prismaService.event.findMany({
+      where: {
+        type: 'event',
+        isDeleted: 0,
+      },
+    });
+
+    if (!events) throw new BadRequestException('Find all event fail');
+
+    const data = events.map((event) => ({
+      id: event.id,
+      title: event.title,
+      type: event.type,
+      date: event.date,
+      location: event.location,
+      price: event.price,
+      image: event.image,
+      seats: event.seats,
+      showTime: event.showTime,
+      startTime: event.startTime
+        ? event.startTime.toISOString().substr(11, 5) // "08:00"
+        : '',
+    }));
+
+    return data;
+  }
+
   async update(id: number, updateEventDto: UpdateEventDto) {
     const existingEvent = await this.prismaService.event.findUnique({
       where: { id: id, isDeleted: 0 },

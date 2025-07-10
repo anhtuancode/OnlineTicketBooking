@@ -36,6 +36,19 @@ export class EventController {
     return await this.eventService.findAll();
   }
 
+  @Get('movies')
+  @Public()
+  async findMovies() {
+    return await this.eventService.findMovies();
+  }
+
+  @Get('events')
+  @Public()
+  async findEvents() {
+    return await this.eventService.findEvents();
+  }
+
+
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {

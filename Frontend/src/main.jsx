@@ -12,11 +12,16 @@ import EditUser from './pages/admin/editUser'
 import EventDashBoard from './pages/admin/event.jsx'
 import EditEvent from './pages/admin/editEvent.jsx'
 import ViewEvent from './pages/admin/detailEvent.jsx'
+import SeatBooking from './pages/client/ticket.jsx'
 
 const routers = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+  },
+  {
+    path: '/ticket/:id', 
+    element: <SeatBooking />,
   },
   {
     path: '/signin',
@@ -53,7 +58,7 @@ const routers = createBrowserRouter([
   {
     path: '/admin/event/:id', 
     element: <ViewEvent />,
-  }
+  },
 ])
 
 createRoot(document.getElementById('root')).render(
