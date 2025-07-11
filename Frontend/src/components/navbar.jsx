@@ -11,6 +11,10 @@ const Navbar = () => {
     setSearchQuery,
     selectedCity,
     setSelectedCity,
+    selectedPrice,
+    setSelectedPrice,
+    selectedDate,
+    setSelectedDate,
     loading,
     handleAllMovies,
     isLogin,
@@ -18,7 +22,8 @@ const Navbar = () => {
     events,
     setEvents,
     handleFindMovies,
-    handleFindEvents
+    handleFindEvents,
+    handleSearch,
   } = useNavbarLogic();
 
   useEffect(() => {
@@ -69,8 +74,8 @@ const Navbar = () => {
           <div className="hidden md:flex gap-6">
             <button
               onClick={() => {
-                setActiveTab("MOVIES")
-                handleFindMovies()
+                setActiveTab("MOVIES");
+                handleFindMovies();
               }}
               className={`transition-colors font-medium hover:text-gray-300 ${
                 activeTab === "MOVIES"
@@ -118,177 +123,6 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-
-      {/* Header Section */}
-      <header className="relative z-10 text-center mt-16 max-w-6xl mx-auto px-6">
-        <h1 className="text-5xl md:text-6xl font-bold mb-4 leading-tight">
-          BOOK YOUR <br />
-          TICKETS FOR <br />
-          <span className="text-white bg-black px-2 border-2 border-white inline-block mt-2">
-            MOVIES
-          </span>
-        </h1>
-        <p className="text-gray-200 text-lg mb-12">
-          Safe, secure, reliable ticketing. Your ticket to live entertainment!
-        </p>
-
-        {/* Search Box */}
-        <div className="bg-white/95 text-black rounded-2xl p-8 shadow-2xl border-2 border-gray-300 backdrop-blur-sm">
-          <h3 className="text-lg font-semibold mb-2 text-gray-800">
-            WELCOME TO ONLINE TICKET BOOKING
-          </h3>
-          <h2 className="text-2xl font-bold mb-6 text-black">
-            WHAT ARE YOU LOOKING FOR
-          </h2>
-
-          {/* Tabs */}
-          <div className="flex justify-center gap-4 mb-8">
-            {["ALL", "MOVIES", "EVENTS"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => {
-                  setActiveTab(tab);
-                  if (tab === "MOVIES"){
-                     handleFindMovies();
-                  }else if (tab === "ALL"){
-                    handleAllMovies();
-                  }else{
-                    handleFindEvents();
-                  }
-                }}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 border-2 ${
-                  activeTab === tab
-                    ? "bg-black text-white border-black"
-                    : "bg-white text-black border-gray-300 hover:border-gray-500"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          {/* Form */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search for Movies"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black"
-              />
-            </div>
-
-            {/* City */}
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
-              >
-                {["Hồ Chí Minh", "Hà Nội", "Bà Rịa Vũng tàu", "Đà Nẵng"].map(
-                  (city) => (
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
-
-            {/* Giá */}
-            <div className="relative">
-              <select
-                onChange={(e) => console.log("Giá:", e.target.value)}
-                className="w-full pl-4 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
-              >
-                <option value="">Mức giá</option>
-                <option value="low">Dưới 100.000đ</option>
-                <option value="mid">100.000đ - 300.000đ</option>
-                <option value="high">Trên 300.000đ</option>
-              </select>
-            </div>
-
-            {/* Date */}
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-              <input
-                type="date"
-                defaultValue="2024-12-03"
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black"
-              />
-            </div>
-
-            {/* Ưu đãi/Đánh giá */}
-            <div className="relative">
-              <select
-                onChange={(e) =>
-                  console.log("Đánh giá/Ưu đãi:", e.target.value)
-                }
-                className="w-full pl-4 pr-4 py-3 bg-gray-50 text-black rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-black focus:border-black appearance-none"
-              >
-                <option value="">Lọc thêm</option>
-                <option value="rating">Đánh giá cao</option>
-                <option value="discount">Có ưu đãi</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Button */}
-          <div className="mt-6">
-            <button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold shadow-lg border-2 border-black transition-all">
-              {loading ? "Loading..." : "Search Movies"}
-            </button>
-          </div>
-        </div>
-
-        {/* Danh sách sự kiện sau nút Search */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {events.length === 0 && !loading ? (
-            <p className="text-white text-center col-span-full">
-              No events found
-            </p>
-          ) : (
-            events.map((event) => (
-              <div
-                key={event.id}
-                className="bg-white/90 p-4 rounded-lg shadow-md backdrop-blur-sm border border-gray-300"
-              >
-                <img
-                  src={
-                    event.image ||
-                    "https://via.placeholder.com/400x200?text=No+Image"
-                  }
-                  alt={event.title}
-                  className="w-full h-48 object-cover rounded-md mb-4"
-                />
-                <h3 className="text-xl font-semibold text-black mb-2">
-                  {event.title}
-                </h3>
-                <p className="text-gray-700 text-sm mb-1">
-                  📍 Location: {event.location}
-                </p>
-                <p className="text-gray-700 text-sm mb-1">
-                  🗓️ Date:{" "}
-                  {event.date ? new Date(event.date).toLocaleDateString() : ""}
-                </p>
-                <p className="text-gray-700 text-sm mb-2">
-                  🎫 Price: {event.price?.toLocaleString()} VND
-                </p>
-                <button className="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
-                  Book Now
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-      </header>
-
-      {/* Footer spacing */}
-      <div className="mt-16 pb-8"></div>
     </div>
   );
 };

@@ -5,12 +5,15 @@ import { useNavigate } from "react-router-dom";
 export const useNavbarLogic = () => {
   const [activeTab, setActiveTab] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCity, setSelectedCity] = useState("Hồ Chí Minh");
+  const [selectedCity, setSelectedCity] = useState("HCM");
   const [selectedCinema, setSelectedCinema] = useState("Roudan");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isLogin, setIsLogin] = useState(!!localStorage.getItem("token"));
-  const [events, setEvents] = useState([]); 
+  const [events, setEvents] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
 
   const navigate = useNavigate();
 
@@ -53,11 +56,12 @@ export const useNavbarLogic = () => {
       setError(err.message);
       setEvents([]); // Nếu lỗi thì clear danh sách event
       console.error("Error fetching events:", err);
-    } 
+      return [];
+    }
   };
 
   const handleFindMovies = async () => {
-    try{
+    try {
       setError("");
 
       const response = await fetch(`${API_URL}/event/movies`, {
@@ -71,16 +75,17 @@ export const useNavbarLogic = () => {
 
       if (!response.ok) throw new Error(data.message || "Something went wrong");
       setEvents(data.data);
-      return data.data;      
-    }catch (err){
+      return data.data;
+    } catch (err) {
       setError(err.message);
-      setEvents([]); 
+      setEvents([]);
       console.error("Error fetching events:", err);
+      return [];
     }
   };
 
   const handleFindEvents = async () => {
-    try{
+    try {
       setError("");
 
       const response = await fetch(`${API_URL}/event/events`, {
@@ -94,11 +99,51 @@ export const useNavbarLogic = () => {
 
       if (!response.ok) throw new Error(data.message || "Something went wrong");
       setEvents(data.data);
-      return data.data;      
-    }catch (err){
+      return data.data;
+    } catch (err) {
       setError(err.message);
-      setEvents([]); 
+      setEvents([]);
       console.error("Error fetching events:", err);
+      return [];
+    }
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      // Tạo query string từ filter
+      const params = new URLSearchParams();
+      if (searchQuery) params.append("title", searchQuery);
+      if (selectedCity) params.append("location", selectedCity);
+      if (selectedPrice) params.append("price", selectedPrice);
+      if (selectedDate) params.append("date", selectedDate);
+      // Gọi API
+      const res = await fetch(`${API_URL}/event/search?${params.toString()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenObj?.accessToken}`,
+        },
+      });
+
+      const data = await res.json();
+      console.log("Kết quả từ API:", data);
+
+      if (!res.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      setEvents(data?.data?.items);
+      setLoading(false);
+      return data?.data?.items || [];
+    } catch (err) {
+      console.error("Error searching events:", err);
+      setError(err.message);
+      setEvents([]);
+      setLoading(false);
+      return [];
     }
   };
 
@@ -117,9 +162,16 @@ export const useNavbarLogic = () => {
     isLogin,
     setIsLogin,
     HandleLogout,
-    events, 
+    events,
     setEvents,
     handleFindMovies,
-    handleFindEvents
-  };
+    handleFindEvents,
+    selectedPrice,
+    setSelectedPrice,
+    selectedDate,
+    setSelectedDate,
+    selectedFilter,
+    setSelectedFilter,
+    handleSearch,
+    };
 };

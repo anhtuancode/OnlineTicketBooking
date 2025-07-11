@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  UseInterceptors,
+  UploadedFile,
+  Req,
+  Query,
+} from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -6,7 +19,6 @@ import { Public } from 'src/common/decorator/public.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { UploadImageDto } from './dto/upload-image.dto';
-
 
 @Controller('event')
 export class EventController {
@@ -20,8 +32,22 @@ export class EventController {
     description: 'List of cats',
     type: UploadImageDto,
   })
-  async create(@Body() createEventDto: CreateEventDto, @UploadedFile() file: Express.Multer.File) {
-    return await this.eventService.create(createEventDto,file);
+  async create(
+    @Body() createEventDto: CreateEventDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.eventService.create(createEventDto, file);
+  }
+
+  @Get('search')
+  @Public()
+  async search(
+    @Query('title') title: string,
+    @Query('location') location?: string,
+    @Query('price') price?: number,
+    @Query('date') date?: string,
+  ) {
+    return await this.eventService.search(title, price, location, date);
   }
 
   @Get('count')
@@ -47,7 +73,6 @@ export class EventController {
   async findEvents() {
     return await this.eventService.findEvents();
   }
-
 
   @Get(':id')
   @Public()

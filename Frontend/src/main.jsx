@@ -13,15 +13,21 @@ import EventDashBoard from './pages/admin/event.jsx'
 import EditEvent from './pages/admin/editEvent.jsx'
 import ViewEvent from './pages/admin/detailEvent.jsx'
 import SeatBooking from './pages/client/ticket.jsx'
+import Index from './pages/client/index.jsx'
+import MovieDetailPage from './pages/client/detail.jsx'
 
 const routers = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <Index />,
   },
   {
     path: '/ticket/:id', 
     element: <SeatBooking />,
+  },
+  {
+    path: '/detail/:id',
+    element: <MovieDetailPage />,
   },
   {
     path: '/signin',

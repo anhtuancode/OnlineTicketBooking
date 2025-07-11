@@ -64,14 +64,69 @@ export class EventService {
     };
   }
 
-  async count(){
+  async count() {
     const count = await this.prismaService.event.count({
       where: {
         isDeleted: 0,
       },
     });
 
-    return count
+    return count;
+  }
+
+  async search(
+    title: string,
+    price?: number,
+    location?: string,
+    date?: string,
+  ) {
+    title = title || '';
+
+    const where: any = { title: { contains: title }, isDeleted: 0 };
+
+    if (price !== undefined) {
+      if (price < 100000) {
+        where.price = { lt: 100000 };
+      } else if (price >= 100000 && price <= 300000) {
+        where.price = {
+          gte: 100000,
+          lte: 300000,
+        };
+      } else if (price > 300000) {
+        where.price = { gt: 300000 };
+      }
+    }
+
+    if (date) {
+      const startDate = new Date(date); // YYYY-MM-DDT00:00:00
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 1); // ngày kế tiếp
+
+      where.date = {
+        gte: startDate,
+        lt: endDate,
+      };
+    }
+
+    if (location) {
+      where.location = {
+        contains: location.toLowerCase(), 
+      };
+    }
+
+    const result = await this.prismaService.event.findMany({
+      where: where,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!result || result.length === 0) {
+      throw new BadRequestException('No matching events found');
+    }
+    return {
+      items: result || [],
+    };
   }
 
   async findAll() {
@@ -154,7 +209,7 @@ export class EventService {
     return data;
   }
 
-  async findEvents(){
+  async findEvents() {
     const events = await this.prismaService.event.findMany({
       where: {
         type: 'event',
