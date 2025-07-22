@@ -231,7 +231,7 @@ export default function MovieDetailPage() {
       ) : (
         <div>Loading...</div>
       )}
-      <SeatBookingModal
+      {/* <SeatBookingModal
         open={isSeatModalOpen}
         onClose={handleCloseSeatModal}
         event={selectedShowtime}
@@ -239,7 +239,8 @@ export default function MovieDetailPage() {
         onSelectSeat={setSelectedSeats}
         rows={["A", "B", "C"]}
         seatsPerRow={8}
-      />
+      /> */}
+      <SeatBookingModal/>
     </div>
   );
 }
