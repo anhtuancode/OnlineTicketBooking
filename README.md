@@ -94,23 +94,6 @@ npm run start:dev
 
 ---
 
-## 🧲 API Documentation
-
-Access Swagger at:
-
-```
-http://localhost:3069/swagger
-```
-
-You can:
-
-* 🔑 Register & Login
-* 👤 Create/update/delete users (admin)
-* 🎫 Create/update/delete events
-* 📄 Create bookings
-* 💳 Pay with Stripe
-
----
 
 ## 🔀 Booking + Payment Flow
 
