@@ -10,8 +10,9 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useDetail } from "../../hooks/useDetail";
-import SeatBookingModal from "../../components/SeatBookingModal";
 import { helperFunction } from "../../common/helpers/helper";
+import SeatBookingModal from "../../components/SeatBookingModal";
+
 
 export default function MovieDetailPage() {
   const { id } = useParams();
