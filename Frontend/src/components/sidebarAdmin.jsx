@@ -6,8 +6,8 @@ const menuItems = [
   { icon: Home, label: 'Dashboard', to: '/admin', active: true },
   { icon: Users, label: 'Người dùng', to: '/admin/user', active: false },
   { icon: Clapperboard, label: 'Phim & Sự kiện', to: '/admin/event', active: false },
-  { icon: BarChart3, label: 'Thống kê', to: '', active: false },
-  { icon: Settings, label: 'Cài đặt', to: '', active: false },
+  { icon: BarChart3, label: 'Booking', to: '/admin/booking', active: false },
+  { icon: Settings, label: 'Trang chủ', to: '/', active: false },
 ];
 
 const SidebarAdmin = ({ sidebarOpen, setSidebarOpen }) => {

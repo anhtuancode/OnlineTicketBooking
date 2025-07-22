@@ -43,17 +43,44 @@ export const useDetail = () => {
         return data.data;
     }catch (err){
         setError(err.message || "Something went wrong");
-        return null; // <-- Thêm dòng này để luôn trả về giá trị
+        return null; 
     } finally {
         setLoading(false);
     }
   }
+
+  const getShowtimesByTitleAndDate = async (title) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch(
+        `${API_URL}/event/search?title=${encodeURIComponent(title)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenObj?.accessToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Something went wrong");
+      // Đảm bảo luôn trả về mảng
+      return Array.isArray(data.data.items) ? data.data.items : [];
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     loading,
     error,
     isLogin,
     HandleLogout,
-    handleDetail
+    handleDetail,
+    getShowtimesByTitleAndDate,
   }
 };

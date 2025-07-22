@@ -1,8 +1,9 @@
 import { IsNotEmpty, IsString, IsNumber, IsArray, IsBoolean, IsEnum} from 'class-validator';
 
 export enum BookingStatus {
-  CONFIRMED = 'CONFIRMED',
-  CANCELLED = 'CANCELLED',
+  CONFIRMED = 'Confirmed',
+  CANCELLED = 'Cancelled',
+  PENDING = 'Pending',
 }
 
 export class CreateBookingDto {
@@ -11,12 +12,8 @@ export class CreateBookingDto {
   eventId: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  seats: number; 
-
-  @IsNotEmpty()
-  @IsNumber()
-  totalPrice: number;
+  @IsString()
+  seats: string; 
 
   @IsNotEmpty()
   @IsEnum(BookingStatus)

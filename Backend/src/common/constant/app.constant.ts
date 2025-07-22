@@ -13,6 +13,8 @@ export const CLOUD_NAME = process.env.CLOUD_NAME
 export const CLOUD_API_KEY = process.env.CLOUD_API_KEY
 export const CLOUD_API_SECRET = process.env.CLOUD_API_SECRET
 
+export const SECRET_KEY_STRIPE = process.env.SECRET_KEY_STRIPE
+
 console.log({
     PORT,
     DATABASE_URL,
@@ -22,5 +24,6 @@ console.log({
     REFRESH_TOKEN_SECRET,
     CLOUD_NAME,
     CLOUD_API_KEY,
-    CLOUD_API_SECRET
+    CLOUD_API_SECRET,
+    SECRET_KEY_STRIPE
 })

@@ -9,9 +9,10 @@ import { ProtectStrategy } from './modules/auth/protect/protect.strategy';
 import { PermissionStrategy } from './modules/auth/permission/permission.strategy';
 import { UserModule } from './modules/user/user.module';
 import { BookingModule } from './modules/booking/booking.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
-  imports: [AuthModule, TokenModule, EventModule, UserModule, BookingModule],
+  imports: [AuthModule, TokenModule, EventModule, UserModule, BookingModule, PaymentModule],
   controllers: [AppController],
   providers: [AppService, ProtectStrategy, PrismaService, PermissionStrategy],
 })

@@ -7,7 +7,9 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userCount, setUserCount] = useState(0);
   const [eventCount, setEventCount] = useState(0);  
-  const { handleCountUser, loading, handleCountEvent } = useAdmin();
+  const [bookingCount, setBookingCount] = useState(0);
+  const [total, setTotal] = useState(0);
+  const { handleCountUser, loading, handleCountEvent, handleCountTicket, handleTotal} = useAdmin();
 
   useEffect(() => {
     const fetchUserCount = async () => {
@@ -32,9 +34,33 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchBookingCount = async () => {
+      try {
+        const data = await handleCountTicket();
+        if (data !== undefined) {
+          setBookingCount(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching user count:", err);
+      }
+    };
+
+    const fetchTotal = async () => {
+      try {
+        const data = await handleTotal();
+        if (data !== undefined) {
+          setTotal(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching user count:", err);
+      }
+    };
+
     fetchUserCount();
     fetchEventCount();
-  }, [handleCountUser, handleCountEvent]);
+    fetchBookingCount();
+    fetchTotal();
+  }, [handleCountUser, handleCountEvent, , handleTotal, handleCountTicket]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -50,8 +76,8 @@ const AdminDashboard = () => {
             {[
               { label: "Tổng người dùng", value: loading ? "Loading..." : userCount.toString() },
               { label: "Phim & event", value: loading ? "Loading..." : eventCount.toString()  },
-              { label: "Lượt xem", value: "89,012" },
-              { label: "Doanh thu", value: "$12,345" },
+              { label: "Số lượng booking", value: loading ? "Loading..." : bookingCount.toString() },
+              { label: "Doanh thu", value: loading ? "Loading..." : `${total.toString()} VND` },
             ].map((stat, index) => (
               <div
                 key={index}

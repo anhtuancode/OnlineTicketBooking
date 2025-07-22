@@ -24,7 +24,9 @@ const Index  = () => {
     handleFindMovies,
     handleFindEvents,
     handleSearch,
+    handleBookNow
   } = useNavbarLogic();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -277,7 +279,7 @@ const Index  = () => {
                 <p className="text-gray-700 text-sm mb-2">
                   🎫 Price: {event.price?.toLocaleString()} VND
                 </p>
-                <button className="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
+                <button onClick={() => handleBookNow(event.id)} className="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
                   Book Now
                 </button>
               </div>

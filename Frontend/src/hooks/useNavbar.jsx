@@ -147,6 +147,10 @@ export const useNavbarLogic = () => {
     }
   };
 
+  const handleBookNow = async (id) => {
+    navigate(`/detail/${id}`);
+  };
+
   return {
     activeTab,
     setActiveTab,
@@ -173,5 +177,6 @@ export const useNavbarLogic = () => {
     selectedFilter,
     setSelectedFilter,
     handleSearch,
+    handleBookNow
     };
 };

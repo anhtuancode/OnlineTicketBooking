@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Put } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { Public } from 'src/common/decorator/public.decorator';
 import { Request } from 'express';
 import { SkipPermission } from 'src/common/decorator/skip-permission.decorator';
+import { UpdateStatusDto } from './dto/update-status.dto';
 
 
 @Controller('booking')
@@ -18,22 +18,31 @@ export class BookingController {
   }
 
   @Get()
-  findAll() {
-    return this.bookingService.findAll();
+  @SkipPermission()
+  async findAll() {
+    return await this.bookingService.findAll();
+  }
+
+  @Get('count')
+  @SkipPermission()
+  async count() {
+    return await this.bookingService.count();
+  }
+
+  @Get('total')
+  @SkipPermission()
+  async total() {
+    return await this.bookingService.total();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookingService.findOne(+id);
+  @SkipPermission()
+  async findOne(@Param('id') id: string) {
+    return await this.bookingService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingService.update(+id, updateBookingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookingService.remove(+id);
+  @Put('update-status/:id')
+  async updateStatus(@Body() updateBookingDto: UpdateStatusDto, @Param('id') id: string) {
+    return this.bookingService.updateStatus(updateBookingDto, +id);
   }
 }

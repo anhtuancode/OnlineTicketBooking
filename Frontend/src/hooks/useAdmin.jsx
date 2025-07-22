@@ -1,55 +1,130 @@
 import { API_URL } from "../common/constant/app.constant";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 export const useAdmin = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const handleCountUser = async () => {
-        try{
-            const reponse = await fetch(`${API_URL}/user/count`,{
-                method: "GET",
-                headers:{
-                    "Content-Type": "application/json",
-                },
-            });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const tokenObj = JSON.parse(token);
 
-            const data = await reponse.json();
+  const getToken = () => {
+    const token = localStorage.getItem("token");
+    try {
+      const tokenObj = JSON.parse(token);
+      if (!tokenObj?.accessToken) throw new Error();
+      return tokenObj.accessToken;
+    } catch {
+      alert("Vui lòng đăng nhập để tiếp tục");
+      navigate("/signin");
+      throw new Error("No token");
+    }
+  };
 
-            if(!reponse.ok){
-                throw new Error(data.message || "Count user successfully");
-            }
+  getToken();
+  
+  
+  const handleCountUser = async () => {
+    try {
+      const reponse = await fetch(`${API_URL}/user/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenObj?.accessToken}`,
+        },
+      });
 
-            return data;
+      const data = await reponse.json();
 
-        }catch(err){
-            setError(err.message);
-        }finally{
-            setLoading(false);
-        }
-    };
+      if (!reponse.ok) {
+        throw new Error(data.message || "Count user successfully");
+      }
 
-    const handleCountEvent = async () => {
-        try{
-            const reponse = await fetch(`${API_URL}/event/count`,{
-                method: "GET",
-                headers:{
-                    "Content-Type": "application/json",
-                },
-            });
+      return data;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            const data = await reponse.json();
+  const handleCountEvent = async () => {
+    try {
+      const reponse = await fetch(`${API_URL}/event/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenObj?.accessToken}`,
+        },
+      });
 
-            if(!reponse.ok){
-                throw new Error(data.message || "Count user successfully");
-            }
+      const data = await reponse.json();
 
-            return data;
+      if (!reponse.ok) {
+        throw new Error(data.message || "Count user successfully");
+      }
 
-        }catch(err){
-            setError(err.message);
-        }finally{
-            setLoading(false);
-        }
-    };
+      return data;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return {handleCountUser, handleCountEvent, loading, error};
-}
+  const handleCountTicket = async () => {
+    try {
+      const reponse = await fetch(`${API_URL}/booking/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenObj?.accessToken}`,
+        },
+      });
+
+      const data = await reponse.json();
+
+      if (!reponse.ok) {
+        throw new Error(data.message || "Count user successfully");
+      }
+      return data;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTotal = async () => {
+    try {
+      const reponse = await fetch(`${API_URL}/booking/total`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenObj?.accessToken}`,
+        },
+      });
+
+      const data = await reponse.json();
+
+      if (!reponse.ok) {
+        throw new Error(data.message || "Count user successfully");
+      }
+      return data;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    handleCountUser,
+    handleCountEvent,
+    handleCountTicket,
+    handleTotal,
+    loading,
+    error,
+  };
+};

@@ -11,7 +11,7 @@ model Booking {
   id                           Int       @id @default(autoincrement())
   userId                       Int
   eventId                      Int
-  seats                        Int
+  seats                        String    @db.VarChar(255)
   totalPrice                   Decimal   @db.Decimal(10, 2)
   status                       String    @db.VarChar(50)
   deletedBy                    Int?
