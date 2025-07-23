@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Star,
   Clock,
   Calendar,
   Users,
@@ -13,12 +12,10 @@ import { useDetail } from "../../hooks/useDetail";
 import { helperFunction } from "../../common/helpers/helper";
 import SeatBookingModal from "../../components/SeatBookingModal";
 
-
 export default function MovieDetailPage() {
   const { id } = useParams();
   const [selectedShowtime, setSelectedShowtime] = useState(null);
-  const [selectedCinema, setSelectedCinema] = useState("");
-  const { HandleLogout, handleDetail, getShowtimesByTitleAndDate} = useDetail();
+  const { HandleLogout, handleDetail, getShowtimesByTitleAndDate } = useDetail();
   const [movie1, setMovie] = useState(null);
   const [relatedShowtimes, setRelatedShowtimes] = useState([]);
   const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
@@ -27,7 +24,7 @@ export default function MovieDetailPage() {
   const handleOpenSeatModal = () => setIsSeatModalOpen(true);
   const handleCloseSeatModal = () => setIsSeatModalOpen(false);
 
-  const {formatDate, formatStartTime} = helperFunction();
+  const { formatDate, formatStartTime } = helperFunction();
 
   useEffect(() => {
     const fetchDetailAndShowtimes = async () => {
@@ -55,15 +52,9 @@ export default function MovieDetailPage() {
               <Link to="/">Online Booking Ticket</Link>
             </div>
             <nav className="flex space-x-6">
-              <a href="#" className="hover:text-blue-400 transition-colors">  
-                MOVIES
-              </a>
-              <a href="#" className="hover:text-blue-400 transition-colors">
-                EVENTS
-              </a>
-              <a href="#" className="hover:text-blue-400 transition-colors">
-                TICKETS
-              </a>
+              <a href="#" className="hover:text-blue-400 transition-colors">MOVIES</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">EVENTS</a>
+              <a href="#" className="hover:text-blue-400 transition-colors">TICKETS</a>
             </nav>
           </div>
           <button
@@ -91,7 +82,9 @@ export default function MovieDetailPage() {
               />
               <div className="space-y-4">
                 <h1 className="text-5xl font-bold">{movie1.title}</h1>
-                <p className="text-xl text-gray-300">Thể loại: {movie1.type==="movie" ? "Phim" : "Sự kiện"}</p>
+                <p className="text-xl text-gray-300">
+                  Thể loại: {movie1.type === "movie" ? "Phim" : "Sự kiện"}
+                </p>
                 <div className="flex items-center space-x-6">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-5 h-5 text-gray-400" />
@@ -127,110 +120,106 @@ export default function MovieDetailPage() {
       {/* Movie Details */}
       {movie1 ? (
         <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Left Column - Movie Info */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold mb-3">Thông tin phim</h3>
-                <div className="space-y-2 text-gray-300">
-                  <div>
-                    <span className="font-medium">Thể loại:</span> {movie1.type==="movie" ? "Phim" : "Sự kiện"}
-                  </div>
-                  <div>
-                    <span className="font-medium">Thời lượng:</span>{" "}
-                    {movie1.showTime} Phút
-                  </div>
-                  <div>
-                    <span className="font-medium">Khởi chiếu:</span>{" "}
-                    {formatDate(movie1.date)}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Thông tin phim</h3>
+                  <div className="space-y-2 text-gray-300">
+                    <div>
+                      <span className="font-medium">Thể loại:</span>{" "}
+                      {movie1.type === "movie" ? "Phim" : "Sự kiện"}
+                    </div>
+                    <div>
+                      <span className="font-medium">Thời lượng:</span>{" "}
+                      {movie1.showTime} Phút
+                    </div>
+                    <div>
+                      <span className="font-medium">Khởi chiếu:</span>{" "}
+                      {formatDate(movie1.date)}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Right Column - Booking */}
-          <div>
-            <div className="bg-gray-800 rounded-xl p-6 sticky top-4">
-              <h3 className="text-2xl font-bold mb-6">Đặt vé xem phim</h3>
+            {/* Right Column - Booking */}
+            <div>
+              <div className="bg-gray-800 rounded-xl p-6 sticky top-4">
+                <h3 className="text-2xl font-bold mb-6">Đặt vé xem phim</h3>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Chọn rạp
-                  </label>
-                  <select
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={selectedCinema}
-                    onChange={e => {
-                      setSelectedCinema(e.target.value);
-                      setSelectedShowtime(null); // reset showtime khi đổi rạp
-                    }}
-                  >
-                    <option value="">-- Chọn rạp --</option>
-                    {Array.from(new Set(relatedShowtimes.map(s => s.location))).map((cinema, idx) => (
-                      <option key={idx} value={cinema}>{cinema}</option>
-                    ))}
-                  </select>
-                </div>
-                {selectedCinema && (
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block text-sm font-medium mb-3">
                       Chọn suất chiếu
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {relatedShowtimes.filter(s => s.location === selectedCinema).map((showtime, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleShowtimeSelect(showtime)}
-                          className={`p-3 rounded-lg border transition-colors ${
-                            selectedShowtime?.date === showtime.date && selectedShowtime?.startTime === showtime.startTime && selectedShowtime?.location === showtime.location
-                              ? "bg-blue-600 border-blue-600"
-                              : "bg-gray-700 border-gray-600 hover:border-blue-500"
-                          }`}
-                        >
-                          <div className="text-sm font-medium">
-                            {formatDate(showtime.date)}
-                          </div>
-                          <div className="text-xs text-gray-400">
-                            {formatStartTime(showtime.startTime)}
-                          </div>
-                          <div className="text-xs text-blue-400">
-                            {showtime.price}
-                          </div>
-                        </button>
-                      ))}
+                    <div className="space-y-4 max-h-96 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+                      <div className="bg-gray-700 p-4 rounded-lg shadow">
+                        <div className="flex items-center text-blue-400 mb-3 font-semibold">
+                          <Users className="w-5 h-5 mr-2" />
+                          <span>{movie1.location}</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          {relatedShowtimes
+                            .filter((s) => s.location === movie1.location)
+                            .map((showtime, index) => (
+                              <button
+                                key={index}
+                                onClick={() => handleShowtimeSelect(showtime)}
+                                className={`p-3 rounded-lg border text-left shadow-sm transition-all duration-150 ${
+                                  selectedShowtime?.date === showtime.date &&
+                                  selectedShowtime?.startTime === showtime.startTime &&
+                                  selectedShowtime?.location === showtime.location
+                                    ? "bg-blue-600 border-blue-600 text-white"
+                                    : "bg-gray-800 border-gray-600 hover:border-blue-400 hover:bg-gray-700"
+                                }`}
+                              >
+                                <div className="text-sm font-semibold">
+                                  {formatStartTime(showtime.startTime)} - {formatDate(showtime.date)}
+                                </div>
+                                <div className="text-xs text-gray-400 mt-1">
+                                  Giá: {showtime.price} VND
+                                </div>
+                              </button>
+                            ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                )}
 
-                <button
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!selectedShowtime}
-                  onClick={handleOpenSeatModal}
-                >
-                  {selectedShowtime ? "Chọn ghế ngồi" : "Chọn suất chiếu"}
-                </button>
+                  <button
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!selectedShowtime}
+                    onClick={handleOpenSeatModal}
+                  >
+                    {selectedShowtime ? "Chọn ghế ngồi" : "Chọn suất chiếu"}
+                  </button>
 
-                {selectedShowtime && (
-                  <div className="mt-4 p-4 bg-gray-700 rounded-lg">
-                    <h4 className="font-semibold mb-2">Thông tin đặt vé</h4>
-                    <div className="text-sm space-y-1 text-gray-300">
-                      <div>Suất chiếu: {formatStartTime(selectedShowtime.startTime)}</div>
-                      <div>Định dạng: {selectedShowtime.type === "event" ? "Sự kiện" : "Phim" }</div>
-                      <div>Giá vé: {selectedShowtime.price} VND</div>
+                  {selectedShowtime && (
+                    <div className="mt-4 p-4 bg-gray-700 rounded-lg">
+                      <h4 className="font-semibold mb-2">Thông tin đặt vé</h4>
+                      <div className="text-sm space-y-1 text-gray-300">
+                        <div>
+                          Suất chiếu: {formatStartTime(selectedShowtime.startTime)}
+                        </div>
+                        <div>
+                          Định dạng: {selectedShowtime.type === "event" ? "Sự kiện" : "Phim"}
+                        </div>
+                        <div>Giá vé: {selectedShowtime.price} VND</div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       ) : (
         <div>Loading...</div>
       )}
+
+      {/* Seat Booking Modal */}
       <SeatBookingModal
         open={isSeatModalOpen}
         onClose={handleCloseSeatModal}
