@@ -171,6 +171,23 @@ export class BookingService {
     return data;
   }
 
+  async seats(id: number) {
+    const records = await this.prismaService.booking.findMany({
+      where: {
+        eventId: id,
+        isDeleted: 0,
+        status: 'Confirmed',
+      },
+    });
+
+    console.log(records);
+    if (!records) throw new BadRequestException('Find seats fail');
+
+     const bookedSeats = records.map((item) => item.seats).flat();
+
+    return bookedSeats;
+  }
+
   async updateStatus(updateStatusDto: UpdateStatusDto, id: number) {
     const validStatuses = ['Pending', 'Confirmed', 'Cancelled'];
     const { status } = updateStatusDto;

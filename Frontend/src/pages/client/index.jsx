@@ -37,7 +37,7 @@ const Index  = () => {
     fetchData();
   }, []);
 
-  const navItems = ["MOVIES", "EVENTS", "TICKETS"];
+  const navItems = ["MOVIES", "EVENTS"];
 
   return (
     <div
@@ -96,16 +96,6 @@ const Index  = () => {
               }`}
             >
               EVENTS
-            </button>
-            <button
-              onClick={() => setActiveTab("TICKETS")}
-              className={`transition-colors font-medium hover:text-gray-300 ${
-                activeTab === "TICKETS"
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-300"
-              }`}
-            >
-              <Link to="/ticket">TICKETS</Link>
             </button>
           </div>
 

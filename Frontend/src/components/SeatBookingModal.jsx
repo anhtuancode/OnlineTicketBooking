@@ -13,13 +13,17 @@ export default function SeatBookingModal({
   seatsPerRow,
 }) {
   const navigate = useNavigate();
-  const { handleBooking } = useSeatBooking({ selectedSeats });
+  const {
+    handleBooking,
+    bookedSeats, // các ghế đã được đặt
+  } = useSeatBooking({ selectedSeats });
   const { formatStartTime } = helperFunction();
 
   if (!open) return null;
 
   // Hàm toggle ghế
   const toggleSeat = (seat) => {
+    if (bookedSeats.includes(seat)) return; // không cho chọn ghế đã đặt
     if (selectedSeats.includes(seat)) {
       onSelectSeat(selectedSeats.filter((s) => s !== seat));
     } else {
@@ -116,15 +120,20 @@ export default function SeatBookingModal({
                   {[...Array(seatsPerRow)].map((_, i) => {
                     const seat = `${row}${i + 1}`;
                     const isSelected = selectedSeats.includes(seat);
-                    // TODO: isBooked logic nếu có
+                    const isBooked = bookedSeats.includes(seat);
+
                     return (
                       <button
                         key={seat}
+                        title={isBooked ? "Ghế đã được đặt" : ""}
                         onClick={() => toggleSeat(seat)}
-                        className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 ${
-                          isSelected
-                            ? "bg-black text-white shadow-gray-400"
-                            : "bg-gray-200 text-gray-700 hover:bg-gray-300 border border-gray-300"
+                        disabled={isBooked}
+                        className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md transform ${
+                          isBooked
+                            ? "bg-red-400 text-white cursor-not-allowed"
+                            : isSelected
+                            ? "bg-black text-white hover:scale-105 shadow-gray-400"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:scale-105 border border-gray-300"
                         }`}
                       >
                         {i + 1}
@@ -156,17 +165,15 @@ export default function SeatBookingModal({
         </div>
         {/* Confirm Button */}
         <div className="mt-4 text-center">
-            <button
-              disabled={selectedSeats.length === 0}
-              onClick={handleConfirmBooking}
-              className={`bg-black hover:bg-gray-800 text-white font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ${
-                selectedSeats.length === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
-            >
-              Xác nhận đặt vé ({selectedSeats.length} ghế)
-            </button>
+          <button
+            disabled={selectedSeats.length === 0}
+            onClick={handleConfirmBooking}
+            className={`bg-black hover:bg-gray-800 text-white font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ${
+              selectedSeats.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Xác nhận đặt vé ({selectedSeats.length} ghế)
+          </button>
         </div>
       </div>
     </div>

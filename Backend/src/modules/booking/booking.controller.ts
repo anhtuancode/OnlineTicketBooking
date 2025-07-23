@@ -23,6 +23,12 @@ export class BookingController {
     return await this.bookingService.findAll();
   }
 
+  @Get('seats/:id')
+  @SkipPermission()
+  async seats(@Param('id') id: string) {
+    return await this.bookingService.seats(+id);
+  }
+
   @Get('count')
   @SkipPermission()
   async count() {

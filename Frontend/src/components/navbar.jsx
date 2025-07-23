@@ -7,23 +7,11 @@ const Navbar = () => {
   const {
     activeTab,
     setActiveTab,
-    searchQuery,
-    setSearchQuery,
-    selectedCity,
-    setSelectedCity,
-    selectedPrice,
-    setSelectedPrice,
-    selectedDate,
-    setSelectedDate,
-    loading,
     handleAllMovies,
     isLogin,
     HandleLogout,
-    events,
     setEvents,
     handleFindMovies,
-    handleFindEvents,
-    handleSearch,
   } = useNavbarLogic();
 
   useEffect(() => {
@@ -34,8 +22,6 @@ const Navbar = () => {
 
     fetchData();
   }, []);
-
-  const navItems = ["MOVIES", "EVENTS"];
 
   return (
     <div
